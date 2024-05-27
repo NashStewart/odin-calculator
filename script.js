@@ -34,7 +34,7 @@ buttonContainer.addEventListener('click', event => {
       break;
   };
   updateDisplay();
-  console.log(`${firstNumber} ${operator} ${secondNumber}`);
+  console.log(`${firstNumber} ${operator} ${secondNumber} ${isEqualsPressed}`);
 });
 
 function updateDisplay() {
@@ -50,10 +50,18 @@ function reset() {
 
 function updateNumbers(value) {
   if (!operator) {
-    firstNumber = value; 
+    if (firstNumber == 0) {
+      firstNumber = value;    
+    } else {
+      firstNumber = `${firstNumber}${value}`;
+    }
     displayText = firstNumber;
   } else {
-    secondNumber = value;
+    if (secondNumber === null) {
+      secondNumber = value;
+    } else {
+      secondNumber = `${secondNumber}${value}`;
+    }
     displayText = secondNumber;
   }
 }
@@ -63,10 +71,10 @@ function updateOperator(value) {
   if (hasOperatorAlready && !isEqualsPressed) {
     displayText = operate();
     firstNumber = displayText;
-    secondNumber = null;
   }
-  operator = value
+  operator = value;
   isEqualsPressed = false;
+  secondNumber = null;
 }
 
 function calculate(value) {
