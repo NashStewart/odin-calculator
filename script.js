@@ -1,7 +1,6 @@
 'use strict'
 
 const display = document.querySelector('.display');
-const temp = document.querySelector('h1');
 const buttonContainer = document.querySelector('.button-container');
 
 let firstNumber = 0;
@@ -38,6 +37,15 @@ buttonContainer.addEventListener('click', event => {
 });
 
 function updateDisplay() {
+  if (String(displayText).length > 16) {
+    if (String(displayText).includes('.') && String(displayText).split('.')[1].length > 6) {
+      displayText = displayText.toFixed(6);
+    }
+    if (String(displayText).length > 16) {
+      displayText = parseFloat(displayText).toExponential(6);
+    }
+  }
+
   display.textContent = displayText;
 }
 
@@ -50,7 +58,7 @@ function reset() {
 
 function updateNumbers(value) {
   if (!operator) {
-    if (firstNumber == 0) {
+    if (firstNumber == 0 && !String(firstNumber).includes('.')) {
       firstNumber = value;    
     } else {
       firstNumber = `${firstNumber}${value}`;
@@ -66,9 +74,26 @@ function updateNumbers(value) {
   }
 }
 
+function addDecimal() {
+  if (!operator && !String(firstNumber).includes('.')) {
+    if (firstNumber == 0) {
+      firstNumber = '0.';
+    } else {
+      firstNumber = `${firstNumber}.`;
+    }
+    displayText = firstNumber;
+  } else if (secondNumber !== null && !String(secondNumber).includes('.')) {
+    secondNumber = `${secondNumber}.`;
+    displayText = secondNumber;
+  } else if (secondNumber === null) {
+    secondNumber = '0.';
+    displayText = secondNumber;
+  }
+}
+
 function updateOperator(value) {
   const hasOperatorAlready = (operator !== null)
-  if (hasOperatorAlready && !isEqualsPressed) {
+  if (hasOperatorAlready && !isEqualsPressed && secondNumber !== null) {
     displayText = operate();
     firstNumber = displayText;
   }
@@ -82,6 +107,10 @@ function calculate(value) {
     displayText = operate();
     firstNumber = displayText;
     isEqualsPressed = true;
+  }
+  if (String(displayText).includes('.') && String(displayText).slice(-1) != '.') {
+    console.log('test');
+    displayText = parseFloat(displayText);
   }
 }
 
